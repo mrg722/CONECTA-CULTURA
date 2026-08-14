@@ -1,0 +1,103 @@
+/* Variables globales para mantener un diseño limpio y escalable */
+:root {
+  --primary-color: #145da0;
+  --text-dark: #16324f;
+  --bg-light: #f4f8fb;
+  --accent-color: #2a7f62;
+  --accent-hover: #1e5c46;
+  --white: #ffffff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  color: var(--text-dark);
+  background-color: var(--bg-light);
+  line-height: 1.6;
+}
+
+header, main, footer {
+  padding: 2rem;
+}
+
+header {
+  color: var(--red);
+  background-color: var(--primary-color);
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+header h1 {
+  margin: 0 0 0.5rem 0;
+  font-size: 2.5rem;
+}
+
+header p {
+  margin: 0;
+  opacity: 0.9;
+}
+
+.hero {
+  background: var(--white);
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  max-width: 800px;
+  margin: 2rem auto;
+}
+
+.mensaje-inicial {
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: var(--primary-color);
+  margin-top: 0.5rem;
+}
+
+.categorias-lista {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin: 1.5rem 0;
+}
+
+.categorias-lista li {
+  background-color: #AFEEEE;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+button {
+  padding: 0.75rem 1.5rem;
+  color: var(--white);
+  background-color: var(--accent-color);
+  border: 0;
+  border-radius: 0.4rem;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: bold;
+  transition: background-color 0.3s ease, transform 0.1s ease;
+}
+
+button:hover {
+  background-color: var(--accent-hover);
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+footer {
+  text-align: center;
+  font-size: 0.9rem;
+  color: #666;
+  margin-top: 4rem;
+  border-top: 1px solid #e0e0e0;
+}
