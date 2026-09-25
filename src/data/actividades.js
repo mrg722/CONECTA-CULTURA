@@ -4,7 +4,7 @@ export const actividades = [
     nombre: "Taller de guitarra",
     categoria: "Música",
     descripcion: "Taller introductorio para aprender acordes básicos.",
-    precio: 15000,
+    precio: 0,
     cupos: 12
   },
   {
@@ -12,7 +12,7 @@ export const actividades = [
     nombre: "Acuarela inicial",
     categoria: "Artes visuales",
     descripcion: "Sesión práctica de color y técnicas iniciales de acuarela.",
-    precio: 12000,
+    precio: 0,
     cupos: 4
   }
 ];
