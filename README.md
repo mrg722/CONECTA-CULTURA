@@ -326,8 +326,6 @@ src/
 │   └── admin/
 │       ├── AdminActividades.jsx
 │       └── FormularioActividad.jsx
-├── App.jsx
-├── App.css
 ├── index.css
 └── main.jsx
 ```
