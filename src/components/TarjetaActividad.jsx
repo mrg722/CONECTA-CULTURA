@@ -31,7 +31,7 @@ function TarjetaActividad({ actividad, onInscribir }) {
           </Link>
 
           <button
-            className="btn btn-success"
+            className="btn btn-primary"
             onClick={() => onInscribir(actividad)}
             disabled={actividad.cupos === 0}
           >
