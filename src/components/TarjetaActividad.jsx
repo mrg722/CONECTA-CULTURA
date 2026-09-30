@@ -11,7 +11,7 @@ function TarjetaActividad({ actividad, onInscribir }) {
         <p>
           {actividad.precio === 0
             ? "Gratis"
-            : `Precio: $\${actividad.precio}`}
+            : `Precio: $${actividad.precio}`}
         </p>
 
         <p>Cupos: {actividad.cupos}</p>
