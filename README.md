@@ -1,48 +1,42 @@
 # Conecta Cultura
 
-Aplicación desarrollada para **DSY1104 · Desarrollo FullStack II** con React, Vite, Bootstrap y React Bootstrap.
+Aplicación de **DSY1104 · Desarrollo FullStack II**, desarrollada con React, Vite, Bootstrap y React Bootstrap.
 
-Este repositorio continúa el trabajo de las Guías 9, 10 y 11. El alcance de este proyecto se mantiene limitado a los requisitos indicados en esas guías y en los documentos de Diseño Responsivo y Actividad 2.2.2.
+Este repositorio incorpora los trabajos autónomos de las Guías 9, 10 y 11, la grilla responsiva y el flujo de despliegue de la Guía 12, y la configuración de pruebas de la Guía 13. Las pruebas manuales, las capturas y la publicación real en EC2 deben verificarse en el entorno donde se ejecuta el proyecto; no se marcan como realizadas antes de comprobarlas.
 
-## Cómo ejecutar el proyecto en el computador
+## Ejecutar el proyecto en Windows
 
-### 1. Abrir la terminal
+### 1. Abrir PowerShell o CMD
 
-Abre **PowerShell** o **Símbolo del sistema (CMD)**.
+Abre **PowerShell** o el **Símbolo del sistema (CMD)**.
 
-Comprueba la carpeta actual con:
+En PowerShell comprueba la carpeta actual:
 
 ```powershell
 pwd
 ```
 
-En PowerShell también puedes comprobar el contenido de la carpeta con:
+Para revisar los archivos de esa carpeta:
 
 ```powershell
 dir
 ```
 
-### 2. Entrar al proyecto
+### 2. Entrar a la carpeta del proyecto
 
-Usando la ubicación local de este proyecto:
+Si el proyecto está guardado en la ruta usada durante el trabajo:
 
 ```powershell
 cd "C:\Users\av-alumno\CONECTA-CULTURA"
 ```
 
-Comprueba nuevamente la ubicación:
+Comprueba que estás en la carpeta correcta:
 
 ```powershell
 pwd
 ```
 
-Debe aparecer la carpeta:
-
-```text
-C:\Users\av-alumno\CONECTA-CULTURA
-```
-
-### 3. Instalar las dependencias
+### 3. Instalar dependencias
 
 Ejecuta:
 
@@ -50,15 +44,21 @@ Ejecuta:
 npm install
 ```
 
-La Guía 11 requiere React Router. La dependencia ya está registrada en el proyecto; para reinstalarla o comprobarla puedes ejecutar:
+Este comando instala las dependencias de `package.json` y sincroniza `package-lock.json` en la copia local cuando haya nuevas dependencias.
+
+**Importante:** después de incorporar las herramientas de pruebas, ejecuta `npm install` antes de usar los comandos de prueba o de compilación. No uses `npm ci` hasta que el archivo de bloqueo esté sincronizado con las dependencias actuales.
+
+### 4. Abrir el proyecto en Visual Studio Code
+
+Desde la carpeta del proyecto ejecuta:
 
 ```powershell
-npm install react-router-dom
+code .
 ```
 
-### 4. Iniciar la aplicación
+### 5. Iniciar la aplicación
 
-Ejecuta:
+En la terminal integrada de Visual Studio Code, o en PowerShell dentro del proyecto, ejecuta:
 
 ```powershell
 npm run dev
@@ -67,39 +67,25 @@ npm run dev
 Vite mostrará una dirección local similar a:
 
 ```text
-Local: http://localhost:5173/
-```
-
-Mantén abierta la terminal.
-
-En VS Code, puedes **mantener presionada la tecla Ctrl y hacer clic sobre la dirección local** que aparece en la terminal para abrir la aplicación en el navegador.
-
-También puedes escribir directamente en el navegador:
-
-```text
 http://localhost:5173/
 ```
 
-### 5. Comprobar que no existan errores
+Mantén abierta la terminal. Para abrir la página, mantén presionada la tecla **Ctrl** y haz clic en la dirección de la terminal; también puedes copiarla y escribirla en el navegador.
 
-En el navegador presiona:
+### 6. Revisar errores
 
-```text
-F12
-```
+En el navegador presiona **F12** y abre la pestaña **Consola**. Revisa que no aparezcan errores rojos mientras navegas por las páginas.
 
-o abre las herramientas del navegador desde el menú de desarrollo.
+## Rutas que se deben comprobar
 
-Selecciona **Consola** y comprueba que no existan errores marcados en rojo.
-
-## Rutas de Conecta Cultura
-
-Con la aplicación ejecutándose en el puerto 5173, prueba directamente estas direcciones:
+Con Vite ejecutándose, abre estas direcciones una a una:
 
 ```text
 http://localhost:5173/
 http://localhost:5173/actividades
 http://localhost:5173/actividades/1
+http://localhost:5173/actividades/2
+http://localhost:5173/actividades/999
 http://localhost:5173/categorias
 http://localhost:5173/ofertas
 http://localhost:5173/inscripciones
@@ -107,232 +93,310 @@ http://localhost:5173/admin/actividades
 http://localhost:5173/esta-ruta-no-existe
 ```
 
-La última dirección permite comprobar la página de dirección no encontrada.
+La dirección con el número `999` debe mostrar que la actividad no existe. La dirección `/esta-ruta-no-existe` debe mostrar la página 404.
 
-Para probar otro detalle de actividad puedes cambiar el número:
+## Guía 9 — Componentes React y React Bootstrap
 
-```text
-http://localhost:5173/actividades/2
-```
+El proyecto tiene componentes reutilizables para la cabecera, navegación, bienvenida, tarjetas, inscripciones y pie de página. La portada utiliza el texto de bienvenida y la imagen `hero.png`. El componente `PiePagina` está integrado en `App`.
 
-También se debe comprobar una actividad inexistente, por ejemplo:
+### Pruebas pendientes de registrar
 
-```text
-http://localhost:5173/actividades/999
-```
+- [ ] Abrir la aplicación y comprobar la consola sin errores.
+- [ ] Guardar una captura de la estructura `src/components`.
+- [ ] A 375 px, comprobar que el menú se muestra cerrado, que se puede abrir y que sus enlaces funcionan.
+- [ ] A 1200 px, comprobar que la navegación queda visible sin el botón del menú.
+- [ ] Guardar una captura del menú cerrado y otra del menú abierto a 375 px.
 
-## Pruebas de la Guía 10
+## Guía 10 — Datos, filtro, inscripciones y persistencia
 
-En **Actividades** se debe comprobar:
+Los datos de las ocho actividades se encuentran en `src/data/actividades.js`. El arreglo contiene cinco categorías: Música, Artes visuales, Tecnología, Cultura y Bienestar.
 
-1. Que se muestran las actividades generadas desde el arreglo de datos.
-2. Que el filtro cambia las actividades mostradas según la categoría.
-3. Que una actividad con precio cero muestra **Gratis**.
-4. Que la inscripción descuenta un cupo.
-5. Que una actividad no puede inscribirse dos veces.
-6. Que una actividad sin cupos no permite la inscripción.
-7. Que al eliminar una inscripción vuelve a aparecer el cupo disponible.
-8. Que **Inscripciones** recupera los registros después de recargar la página.
+### Pruebas manuales
 
-Para comprobar la persistencia:
+1. Abre **Actividades** y comprueba que se muestran las tarjetas.
+2. Cambia el filtro por cada categoría y confirma que la lista cambia.
+3. Comprueba que una actividad con precio cero muestra **Gratis**.
+4. Comprueba que se muestra el aviso de últimos cupos cuando quedan cinco cupos o menos, siempre que sean más de cero.
+5. Comprueba que la actividad sin cupos tiene el botón **Inscribirme** deshabilitado.
+6. Inscríbete en una actividad con cupos disponibles y comprueba que el número baja en uno.
+7. Intenta inscribirte otra vez en la misma actividad y comprueba que no se crea un duplicado.
+8. Abre **Inscripciones** y elimina la inscripción.
+9. Comprueba que el cupo se devuelve.
+10. Recarga el navegador con **F5** y verifica que las inscripciones siguen presentes y que los cupos continúan coherentes.
 
-```text
-1. Inscribe una actividad.
-2. Abre Inscripciones.
-3. Comprueba que aparece la actividad.
-4. Recarga el navegador con F5.
-5. Comprueba nuevamente la inscripción.
-```
+- [ ] Guardar captura de la cartelera generada desde el arreglo.
+- [ ] Guardar captura del filtro aplicado.
+- [ ] Guardar captura de una inscripción agregada y de su eliminación.
+- [ ] Guardar captura de la persistencia después de recargar.
 
-## Pruebas del formulario administrativo
+## Guía 11 — Rutas, formulario y administración
 
-En:
+El formulario administrativo es controlado por el estado de React y presenta mensajes junto a los campos con errores.
+
+### Comprobar el formulario
+
+Abre:
 
 ```text
 http://localhost:5173/admin/actividades
 ```
 
-comprueba el formulario.
+Haz estas pruebas:
 
-Debe contener:
+- [ ] Enviar el formulario vacío y comprobar el error de nombre.
+- [ ] Dejar la categoría sin seleccionar y comprobar el error.
+- [ ] Dejar cupos vacío y comprobar el error.
+- [ ] Ingresar un número negativo de cupos y comprobar el error.
+- [ ] Completar datos válidos y comprobar que la nueva actividad aparece en la lista.
+- [ ] Eliminar una actividad desde la administración y comprobar que desaparece de esa lista.
 
-- Nombre
-- Categoría
-- Cupos
+### Comprobar rutas directas
 
-Prueba primero el envío sin completar los campos.
+Escribe las direcciones de la sección **Rutas que se deben comprobar** directamente en la barra del navegador; no llegues a todas ellas únicamente mediante los enlaces. Esto permite revisar el detalle por identificador, las rutas internas y la página 404.
 
-Después comprueba:
+- [ ] Guardar captura del mapa de rutas funcionando.
+- [ ] Guardar captura del detalle obtenido mediante un identificador.
+- [ ] Guardar captura del formulario con errores visibles.
+- [ ] Guardar captura de una nueva actividad creada y mostrada en la lista.
 
-- Nombre vacío → aparece un mensaje de error.
-- Categoría sin seleccionar → aparece un mensaje de error.
-- Cupos vacío → aparece un mensaje de error.
-- Cupos negativo → aparece un mensaje de error.
-- Datos válidos → se agrega la actividad a la lista.
+## Guía 12 — Diseño responsivo y compilación de producción
 
-Después de crear una actividad, comprueba que aparezca en **Actividades**.
+La cartelera utiliza la grilla responsiva de React Bootstrap:
 
-También comprueba el botón **Eliminar** en la administración.
+- `xs={12}`: una tarjeta por fila en pantallas estrechas.
+- `md={6}`: dos tarjetas por fila desde el punto de quiebre mediano.
+- `lg={4}`: tres tarjetas por fila desde el punto de quiebre grande.
 
-## Pruebas de diseño responsivo
+### Matriz de revisión responsiva
 
-Las guías de diseño adaptable piden comprobar distintos anchos de pantalla.
+Activa la vista de dispositivo en Chrome o Edge con **Ctrl + Shift + M**. Introduce cada ancho manualmente y revisa menú, formulario, tarjetas, botones, foco visible, imágenes y desplazamiento horizontal.
 
-En Chrome o Edge abre las herramientas del desarrollador y activa la vista de dispositivo mediante:
+| Ancho | Qué comprobar | Estado de la prueba |
+|---|---|---|
+| 375 px | Menú, formulario, tarjetas y botones táctiles | Pendiente |
+| 768 px | Dos columnas y espaciado | Pendiente |
+| 1024 px | Administración, navegación y controles | Pendiente |
+| 1440 px | Ancho del contenido y lectura | Pendiente |
+| 1200 px | Menú de escritorio y enlaces visibles | Pendiente |
 
-```text
-Ctrl + Shift + M
-```
+No marques una prueba como completada hasta verla en el navegador.
 
-Realiza las comprobaciones en:
+- [ ] Corregir cualquier desbordamiento horizontal observado.
+- [ ] Comprobar que el foco del teclado sea visible.
+- [ ] Comprobar que el control de categoría conserve su etiqueta.
+- [ ] Comprobar que las imágenes no se salgan de su contenedor y tengan texto alternativo.
+- [ ] Guardar las capturas de 375, 768 y 1200 px.
 
-```text
-320 px
-375 px
-768 px
-1024 px
-1440 px
-```
+### Generar y revisar la compilación de producción
 
-En particular, para la Guía 9 comprueba el comportamiento del menú en:
-
-```text
-375 px
-1200 px
-```
-
-A 375 px debe aparecer el botón del menú y este debe poder abrirse y cerrarse.
-
-En un ancho de escritorio los enlaces deben permanecer visibles sin el botón de menú.
-
-También comprueba que no exista desplazamiento horizontal innecesario.
-
-## Comprobaciones antes de registrar un avance
-
-Ejecuta:
-
-```powershell
-npm run lint
-```
-
-Después:
+En la terminal, dentro del proyecto, ejecuta:
 
 ```powershell
 npm run build
+npm run preview
 ```
 
-Si ambos comandos terminan correctamente, comprueba nuevamente la aplicación en el navegador.
+Si el primer comando termina correctamente, Vite genera la carpeta `dist`. El segundo ejecuta una vista previa local de esa compilación; **no equivale a publicarla en Internet**.
 
-## Estado auditado de las Guías 9, 10 y 11
+- [ ] Confirmar que `npm run build` termina sin errores.
+- [ ] Abrir la dirección que indica `npm run preview`.
+- [ ] Abrir una ruta interna y recargarla para comprobar que la compilación conserva la navegación.
 
-### Guía 9
+### Publicación en AWS EC2 y Nginx
 
-- [x] Proyecto React + Vite.
-- [x] Bootstrap y React Bootstrap.
-- [x] Componente de cabecera.
-- [x] Componente de navegación.
-- [x] Componente de bienvenida.
-- [x] Componente de tarjeta.
-- [x] Componente de pie de página integrado en la aplicación.
-- [x] Texto de portada trasladado.
-- [x] Imagen de portada utilizada.
-- [x] Al menos tres tarjetas.
-- [x] Recursos de ejemplo de Vite que no se utilizan eliminados.
-- [ ] Comprobación manual del menú a 375 px.
-- [ ] Comprobación manual del menú a 1200 px.
-- [ ] Evidencias de la guía.
+**Estado actual: pendiente de ejecución en una instancia EC2 real.** El repositorio no contiene una IP pública ni una URL de despliegue verificada, por lo que no se registra una dirección o fecha inventada. Nunca subas el archivo privado `.pem` al repositorio ni lo compartas en el chat.
 
-### Guía 10
+#### A. Preparar la instancia
 
-- [x] Datos representados mediante objetos y arreglo.
-- [x] Ocho actividades.
-- [x] Más de cuatro categorías.
-- [x] Tarjetas generadas desde el arreglo.
-- [x] Props.
-- [x] Estado con `useState`.
-- [x] Filtro por categoría.
-- [x] Inscripción.
-- [x] Prevención de duplicados.
-- [x] Eliminación de inscripción.
-- [x] `MisInscripciones`.
-- [x] `useEffect`.
-- [x] `localStorage`.
-- [x] Recuperación de inscripciones al recargar.
-- [x] Mostrar **Gratis** cuando el precio es cero.
-- [x] Actividad con exactamente cinco cupos.
-- [x] Actividad sin cupos.
-- [ ] Evidencias de la guía.
+En AWS Academy, crea o utiliza la instancia Ubuntu indicada por la guía. El grupo de seguridad debe permitir SSH por el puerto 22 solamente desde tu IP pública actual con máscara `/32`, y HTTP por el puerto 80 desde Internet. Anota la IP pública de la instancia.
 
-### Guía 11
+#### B. Proteger la llave desde PowerShell
 
-- [x] React Router instalado y registrado.
-- [x] `BrowserRouter`.
-- [x] `Routes` y `Route`.
-- [x] Ruta de inicio.
-- [x] Ruta de actividades.
-- [x] Ruta de detalle con `id`.
-- [x] Ruta de categorías.
-- [x] Ruta de ofertas.
-- [x] Ruta de inscripciones.
-- [x] Ruta administrativa.
-- [x] Ruta para dirección no encontrada.
-- [x] `NavLink` y `Link`.
-- [x] `useParams`.
-- [x] Conversión de `id` a número.
-- [x] Tratamiento de actividad inexistente.
-- [x] Formulario controlado.
-- [x] Campos de nombre, categoría y cupos.
-- [x] Validación y mensajes.
-- [x] Create de actividades sobre el estado.
-- [x] Delete de actividades sobre el estado.
-- [ ] Comprobación manual de todas las direcciones escribiéndolas directamente.
-- [ ] Evidencias de la guía.
+En PowerShell, entra en la carpeta donde está tu llave y reemplaza `CLAVE.pem` por su nombre real:
 
-## Documentos 2.2.1 y 2.2.2
+```powershell
+icacls ".\CLAVE.pem" /inheritance:r
+icacls ".\CLAVE.pem" /grant:r "$($env:USERNAME):(R)"
+icacls ".\CLAVE.pem" /remove:g "*S-1-5-32-545" "*S-1-5-11" "*S-1-1-0"
+icacls ".\CLAVE.pem"
+```
 
-### 2.2.1 Diseño Responsivo
+Conecta reemplazando `IP_PUBLICA` por la dirección de tu instancia:
 
-El documento corresponde al material de la sesión de Diseño Responsivo y presenta contenidos de React, componentes, props, estado, almacenamiento local y React Router. También remite a la Actividad 2.2.2.
+```powershell
+ssh -i ".\CLAVE.pem" ubuntu@IP_PUBLICA
+```
 
-En este repositorio se aplican únicamente los contenidos que corresponden al proyecto actual y que están respaldados por las Guías 9, 10 y 11.
+Si SSH pregunta si deseas confiar en la huella de la instancia correcta, confirma según las instrucciones de la guía.
 
-### 2.2.2 Actividad de creación de sitios web responsivos
+#### C. Instalar Nginx en la instancia
 
-El documento describe principalmente una actividad de configuración de React en un entorno EC2 de AWS.
+Estos comandos se ejecutan **dentro de la sesión SSH de Ubuntu**, no en PowerShell:
 
-No se reemplaza React + Vite por otra arquitectura y no se incorpora infraestructura EC2 dentro de este repositorio. Esa parte corresponde al entorno de trabajo indicado por el documento.
+```bash
+sudo apt update
+sudo apt install -y nginx
+sudo systemctl enable --now nginx
+sudo systemctl is-active nginx
+sudo nginx -t
+```
 
-## Estructura principal
+#### D. Construir y copiar el sitio
+
+Vuelve a PowerShell local y, desde la carpeta del proyecto, genera la compilación:
+
+```powershell
+npm run build
+ssh -i ".\CLAVE.pem" ubuntu@IP_PUBLICA "mkdir -p /tmp/conecta-cultura"
+scp -i ".\CLAVE.pem" -r ".\dist\*" ubuntu@IP_PUBLICA:/tmp/conecta-cultura/
+```
+
+En la sesión SSH de Ubuntu copia los archivos al directorio publicado y asigna permisos de lectura:
+
+```bash
+sudo mkdir -p /var/www/conecta-cultura
+sudo cp -a /tmp/conecta-cultura/. /var/www/conecta-cultura/
+sudo chown -R www-data:www-data /var/www/conecta-cultura
+sudo find /var/www/conecta-cultura -type d -exec chmod 755 {} \;
+sudo find /var/www/conecta-cultura -type f -exec chmod 644 {} \;
+ls -la /var/www/conecta-cultura
+```
+
+#### E. Configurar el fallback de React Router
+
+En Ubuntu, abre el archivo de configuración:
+
+```bash
+sudo nano /etc/nginx/sites-available/conecta-cultura
+```
+
+Guarda este contenido completo:
+
+```nginx
+server {
+    listen 80;
+    listen [::]:80;
+    server_name _;
+
+    root /var/www/conecta-cultura;
+    index index.html;
+
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+}
+```
+
+Guarda en `nano` con **Ctrl + O**, pulsa **Enter** y sal con **Ctrl + X**.
+
+Activa el sitio y valida la configuración:
+
+```bash
+sudo ln -sfn /etc/nginx/sites-available/conecta-cultura /etc/nginx/sites-enabled/conecta-cultura
+sudo rm -f /etc/nginx/sites-enabled/default
+sudo nginx -t
+sudo systemctl reload nginx
+```
+
+Recarga Nginx solamente si `sudo nginx -t` informa que la configuración es correcta.
+
+#### F. Verificar la publicación
+
+En el navegador abre, usando la IP real:
 
 ```text
-src/
-├── components/
-│   ├── Bienvenida.jsx
-│   ├── Cabecera.jsx
-│   ├── MisInscripciones.jsx
-│   ├── Navegacion.jsx
-│   ├── PiePagina.jsx
-│   └── TarjetaActividad.jsx
-├── data/
-│   └── actividades.js
-├── pages/
-│   ├── Actividades.jsx
-│   ├── Categorias.jsx
-│   ├── DetalleActividad.jsx
-│   ├── Inicio.jsx
-│   ├── Inscripciones.jsx
-│   ├── NoEncontrada.jsx
-│   ├── Ofertas.jsx
-│   └── admin/
-│       ├── AdminActividades.jsx
-│       └── FormularioActividad.jsx
-├── index.css
-└── main.jsx
+http://IP_PUBLICA/
+http://IP_PUBLICA/actividades
+http://IP_PUBLICA/actividades/2
 ```
+
+Abre directamente `/actividades/2` y recarga con **F5**. La página debe seguir mostrando la vista de esa actividad y no una respuesta 404 del servidor.
+
+Una vez publicado, completa:
+
+- URL o IP pública: **pendiente de registrar**.
+- Fecha real de despliegue: **pendiente de registrar**.
+- [ ] Captura del sitio servido por Nginx.
+- [ ] Captura de una ruta interna después de recargar.
+
+## Guía 13 — Vitest y React Testing Library
+
+La configuración de pruebas utiliza Vitest, jsdom, React Testing Library, jest-dom y user-event. Se definieron exactamente cinco pruebas:
+
+| Prueba | Archivo | Comportamiento |
+|---|---|---|
+| 1 | `src/utils/precio.spec.jsx` | El precio cero devuelve **Gratis** |
+| 2 | `src/utils/precio.spec.jsx` | Un precio positivo incluye el separador de miles |
+| 3 | `src/components/TarjetaActividad.spec.jsx` | La tarjeta muestra el nombre recibido por props |
+| 4 | `src/components/TarjetaActividad.spec.jsx` | La tarjeta informa cuando quedan pocos cupos |
+| 5 | `src/components/TarjetaActividad.spec.jsx` | El clic ejecuta `onInscribir` con la actividad correcta |
+
+### Ejecutar las pruebas
+
+Después de ejecutar `npm install`, ejecuta:
+
+```powershell
+npm run test:run
+```
+
+El resultado esperado son **cinco pruebas aprobadas**. Si aparece un error, revisa el nombre del archivo, la ruta de importación, el entorno jsdom y la salida del comparador.
+
+Para ejecutar las pruebas en modo de observación:
+
+```powershell
+npm test
+```
+
+Para generar cobertura:
+
+```powershell
+npm run coverage
+```
+
+La carpeta generada `coverage` queda excluida de Git.
+
+### Ejercicio de la guía: provocar un fallo y restaurar
+
+1. Abre temporalmente `src/utils/precio.spec.jsx`.
+2. Cambia el resultado esperado `"Gratis"` por un texto incorrecto.
+3. Ejecuta `npm run test:run` y lee el mensaje que identifica la prueba fallida.
+4. Restaura el resultado esperado a `"Gratis"`.
+5. Vuelve a ejecutar `npm run test:run` y comprueba que las cinco pruebas queden aprobadas.
+
+No dejes ni registres una prueba modificada intencionalmente para que falle.
+
+- [ ] Guardar captura de dependencias, configuración y comandos.
+- [ ] Guardar captura de las cinco pruebas aprobadas.
+- [ ] Guardar captura de la prueba de contenido/props.
+- [ ] Guardar captura de `vi.fn` verificando el evento.
+- [ ] Documentar qué requisito cubre cada prueba; la tabla anterior sirve como referencia.
+- [ ] Ejecutar `npm run lint` y `npm run build` después de incorporar las herramientas.
+
+## Estado de cierre
+
+### Implementación presente en el código
+
+- [x] Guía 9: componentes, pie de página, portada e imagen.
+- [x] Guía 10: ocho actividades, cinco categorías, filtro e inscripciones.
+- [x] Guía 11: rutas, vista 404, formulario controlado, Create y Delete.
+- [x] Guía 12: grilla responsiva, estilos base adaptables y configuración de instrucciones de producción/Nginx.
+- [x] Guía 13: configuración de Vitest y cinco casos de prueba.
+- [x] `.gitignore` excluye `node_modules`, `dist`, `coverage` y archivos `.pem`.
+
+### Pendiente de verificación externa o ejecución local
+
+- [ ] Sincronizar `package-lock.json` ejecutando `npm install` en la copia local.
+- [ ] Ejecutar `npm run test:run` y comprobar las cinco pruebas.
+- [ ] Ejecutar `npm run lint` y `npm run build`.
+- [ ] Completar matriz responsiva y guardar capturas.
+- [ ] Ejecutar las pruebas manuales de las Guías 9, 10 y 11.
+- [ ] Desplegar en la instancia EC2 real, probar el fallback de rutas y registrar URL/IP y fecha.
+
+La configuración de EC2 no se considera terminada solo por escribir sus instrucciones: debe verificarse en la instancia real.
 
 ## Git
 
-Antes de registrar cualquier avance:
+Antes de registrar cambios, comprueba el estado:
 
 ```powershell
 git status
@@ -344,20 +408,17 @@ Revisa las diferencias:
 git diff
 ```
 
-Agrega únicamente los archivos relacionados con el avance.
-
-Ejemplo para un avance de documentación:
+Agrega solo los archivos que correspondan al trabajo terminado. Para registrar una actualización del README, por ejemplo:
 
 ```powershell
 git add README.md
-git commit -m "docs: actualizar instrucciones del proyecto"
-git push
+git commit -m "docs: actualizar instrucciones y pruebas del proyecto"
 ```
 
-Después comprueba:
+Comprueba después:
 
 ```powershell
 git status
 ```
 
-La rama utilizada para el proyecto es `main`.
+La rama principal del proyecto es `main`.
