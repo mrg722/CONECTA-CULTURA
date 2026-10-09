@@ -1,17 +1,18 @@
+import { Col, Row } from "react-bootstrap";
 import TarjetaActividad from "../components/TarjetaActividad";
 
 function Cartelera({ actividades, onInscribir }) {
   return (
-    <div className="row g-4">
+    <Row className="g-4">
       {actividades.map((actividad) => (
-        <div className="col-12 col-md-6 col-lg-4" key={actividad.id}>
+        <Col xs={12} md={6} lg={4} key={actividad.id}>
           <TarjetaActividad
             actividad={actividad}
             onInscribir={onInscribir}
           />
-        </div>
+        </Col>
       ))}
-    </div>
+    </Row>
   );
 }
 
