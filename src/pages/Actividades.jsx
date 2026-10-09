@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Container } from "react-bootstrap";
 import Cartelera from "./Cartelera";
 
 function Actividades({ actividades, onInscribir }) {
@@ -12,10 +13,14 @@ function Actividades({ actividades, onInscribir }) {
         );
 
   return (
-    <main className="container py-4">
+    <Container as="main" className="py-4">
       <h1>Actividades</h1>
 
+      <label className="form-label" htmlFor="filtro-categoria">
+        Filtrar por categoría
+      </label>
       <select
+        id="filtro-categoria"
         className="form-select mb-4"
         value={categoria}
         onChange={(evento) => setCategoria(evento.target.value)}
@@ -32,7 +37,7 @@ function Actividades({ actividades, onInscribir }) {
         actividades={actividadesFiltradas}
         onInscribir={onInscribir}
       />
-    </main>
+    </Container>
   );
 }
 
