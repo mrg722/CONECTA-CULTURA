@@ -19,8 +19,17 @@ function App() {
     return guardadas ? JSON.parse(guardadas) : [];
   });
 
-  const [actividadesActuales, setActividadesActuales] =
-    useState(actividades);
+  const [actividadesActuales, setActividadesActuales] = useState(() =>
+    actividades.map((actividad) => {
+      const yaInscrito = inscripciones.some(
+        (item) => item.id === actividad.id
+      );
+
+      return yaInscrito
+        ? { ...actividad, cupos: Math.max(0, actividad.cupos - 1) }
+        : actividad;
+    })
+  );
 
   function inscribir(actividad) {
     const yaExiste = inscripciones.some(
@@ -118,10 +127,7 @@ function App() {
           element={<Categorias actividades={actividadesActuales} />}
         />
 
-        <Route
-          path="/ofertas"
-          element={<Ofertas />}
-        />
+        <Route path="/ofertas" element={<Ofertas />} />
 
         <Route
           path="/inscripciones"
