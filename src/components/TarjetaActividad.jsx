@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { formatearPrecio } from "../utils/precio";
 
 function TarjetaActividad({ actividad, onInscribir }) {
   return (
@@ -10,8 +11,8 @@ function TarjetaActividad({ actividad, onInscribir }) {
 
         <p>
           {actividad.precio === 0
-            ? "Gratis"
-            : `Precio: $${actividad.precio}`}
+            ? formatearPrecio(actividad.precio)
+            : `Precio: ${formatearPrecio(actividad.precio)}`}
         </p>
 
         <p>Cupos: {actividad.cupos}</p>
