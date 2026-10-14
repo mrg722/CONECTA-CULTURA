@@ -321,69 +321,110 @@ Una vez publicado, completa:
 
 ## Guía 13 — Vitest y React Testing Library
 
-La configuración de pruebas utiliza Vitest, jsdom, React Testing Library, jest-dom y user-event. Los cinco casos originales son:
-
-| Prueba | Archivo | Comportamiento |
-|---|---|---|
-| 1 | `src/utils/precio.spec.jsx` | El precio cero devuelve **Gratis** |
-| 2 | `src/utils/precio.spec.jsx` | Un precio positivo incluye el separador de miles |
-| 3 | `src/components/TarjetaActividad.spec.jsx` | La tarjeta muestra el nombre recibido por props |
-| 4 | `src/components/TarjetaActividad.spec.jsx` | La tarjeta informa cuando quedan pocos cupos |
-| 5 | `src/components/TarjetaActividad.spec.jsx` | El clic ejecuta `onInscribir` con la actividad correcta |
+El repositorio tiene configurados Vitest, jsdom, React Testing Library, jest-dom y user-event. La Guía 13 introdujo las pruebas de formato del precio y de la tarjeta.
 
 ## Guía 14 — Cobertura, mocks y preparación evaluativa
 
-La Guía 14 amplía las pruebas y documenta cómo interpretar cobertura, relacionar requisitos y ensayar la presentación.
+Se implementaron los diez comportamientos de la matriz principal de la guía y las pruebas adicionales de persistencia, servicio asíncrono, navegación, cupos y formulario.
 
-### Diez criterios principales
+### Estado de validación automática
 
-| N.º | Criterio | Archivo |
+**Última validación verificada:** 14-10-2026.  
+**[Abrir ejecución de GitHub Actions](https://github.com/mrg722/CONECTA-CULTURA/actions/runs/38578919623)**
+
+| Comprobación | Resultado |
+|---|---|
+| Archivos de prueba | 9 aprobados |
+| Pruebas automatizadas | 22 aprobadas, 0 fallidas |
+| Statements | 100% |
+| Branches | 100% |
+| Functions | 100% |
+| Lines | 100% |
+| ESLint | Correcto, sin errores ni advertencias del proyecto |
+| Build de producción | Correcto |
+| Auditoría de dependencias npm | 0 vulnerabilidades conocidas en la ejecución registrada |
+| Informe HTML | Subido como artefacto de GitHub Actions |
+
+La cobertura se calcula para los archivos de producción `src/**/*.{js,jsx}`, excluyendo los archivos de pruebas, la preparación de tests y el punto de entrada `src/main.jsx`. Un 100% de cobertura no sustituye pruebas de aceptación en el navegador ni demuestra por sí mismo la calidad de todos los requisitos.
+
+### Matriz de los diez criterios principales
+
+| N.º | Comportamiento esperado | Archivo |
 |---|---|---|
 | 1 | Precio cero muestra **Gratis** | `src/utils/precio.spec.jsx` |
-| 2 | Precio positivo se formatea con separador de miles | `src/utils/precio.spec.jsx` |
-| 3 | Tarjeta muestra el nombre recibido por props | `src/components/TarjetaActividad.spec.jsx` |
+| 2 | Precio positivo incluye separador de miles | `src/utils/precio.spec.jsx` |
+| 3 | La tarjeta muestra el nombre de la actividad | `src/components/TarjetaActividad.spec.jsx` |
 | 4 | Los cupos críticos muestran aviso | `src/components/TarjetaActividad.spec.jsx` |
 | 5 | Con cero cupos se deshabilita el botón | `src/components/TarjetaActividad.spec.jsx` |
 | 6 | La tarjeta muestra la categoría recibida por props | `src/components/TarjetaActividad.spec.jsx` |
 | 7 | El clic llama a `onInscribir` con la actividad | `src/components/TarjetaActividad.spec.jsx` |
-| 8 | El filtro actualiza los resultados | `src/pages/Actividades.spec.jsx` |
-| 9 | Guardar utiliza `localStorage` con clave y JSON correctos | `src/utils/persistencia.spec.js` |
-| 10 | Actividad inexistente muestra un mensaje | `src/pages/DetalleActividad.spec.jsx` |
+| 8 | Cambiar categoría actualiza los resultados | `src/pages/Actividades.spec.jsx` |
+| 9 | La persistencia llama a `localStorage.setItem` con la clave y JSON correctos | `src/utils/persistencia.spec.js` |
+| 10 | Una actividad inexistente presenta un mensaje | `src/pages/DetalleActividad.spec.jsx` |
 
-La sección 7 de la propia guía solicita además una prueba separada del mock asíncrono. Para cubrir ambos bloques, se añade una prueba didáctica en `src/services/actividades.spec.js`; por eso los archivos contienen **diez casos de la matriz más un caso demostrativo de mock (once en total)**. La matriz principal enumera diez criterios y la prueba adicional proviene de la sección explicativa sobre mocks; esta diferencia está documentada en `docs/AUDITORIA_GUIA_14.md`.
+La sección de mock asíncrono de la misma guía pide un ejercicio adicional: `src/services/actividades.spec.js` prueba `obtenerNombres` usando `vi.fn().mockResolvedValue`. Además, hay pruebas para el detalle válido, el flujo de inscripción/eliminación, navegación, administración y validación de cupos. Por eso el total es **22 pruebas**, no solo las diez de la tabla.
 
-### Ejecutar pruebas y cobertura
+### Archivos importantes de la Guía 14
 
-Desde la raíz del proyecto, usando Node.js compatible con Vite 8:
+- `src/utils/persistencia.js`: función real que guarda inscripciones mediante `localStorage`.
+- `src/utils/persistencia.spec.js`: espía `Storage.prototype.setItem` y restaura el espía al terminar.
+- `src/services/actividades.js` y `.spec.js`: ejemplo aislado de inyección de dependencia asíncrona, sin llamada a Internet.
+- `src/App.spec.jsx`: navegación, alta/baja de inscripción y administración.
+- `src/App.cupos.spec.jsx`: comprueba que la lógica no acepte una inscripción agotada, aunque se invoque directamente el manejador.
+- `src/pages/admin/FormularioActividad.spec.jsx`: validación de campos vacíos y cupos negativos.
+- `vite.config.js`: configura cobertura V8 en texto, HTML y LCOV.
+- `.github/workflows/validar.yml`: ejecuta instalación, auditoría de dependencias, pruebas, cobertura, lint y build.
 
-```powershell
-npm install
+### Documentación evaluativa
+
+- [Auditoría completa de la Guía 14](docs/AUDITORIA_GUIA_14.md)
+- [Informe de cobertura de pruebas](docs/INFORME_COBERTURA.md)
+- [Especificación de Requisitos de Software (ERS)](docs/ERS.md)
+
+### Ejecutar localmente en Windows
+
+La configuración actual requiere una versión moderna de Node.js; Node.js 14 es demasiado antiguo para Vite, Vitest y ESLint usados por el proyecto. En CMD, comprueba la versión:
+
+```cmd
+node -v
+npm -v
+```
+
+Si sigues usando Node 14 con nvm-windows, instala y selecciona Node.js 24:
+
+```cmd
+nvm install 24
+nvm use 24
+node -v
+npm -v
+```
+
+En la carpeta raíz correcta del proyecto, instala dependencias y ejecuta las verificaciones:
+
+```cmd
+cd /d "C:\Users\av-alumno\conecta-cultura-react\CONECTA-CULTURA"
+npm ci
 npm run test:run
 npm run coverage
 npm run lint
 npm run build
+npm run dev
 ```
 
-El comando de cobertura genera el resumen de consola y el informe HTML en `coverage/index.html`. En `docs/INFORME_COBERTURA.md` se debe registrar la salida real: Statements, Branches, Functions y Lines, las líneas o ramas no cubiertas, los riesgos y las mejoras. No se rellenan porcentajes antes de la ejecución.
+El lockfile se encuentra sincronizado con las dependencias del proyecto. `npm ci` permite hacer una instalación reproducible usando ese archivo. Para abrir la página, visita la URL que muestra Vite, normalmente `http://localhost:5173/`.
 
-### Documentación evaluativa
+### Elementos que requieren evidencia manual del equipo
 
-- `docs/ERS.md`: arquitectura, mapa de rutas, requisitos funcionales/no funcionales y matriz de trazabilidad.
-- `docs/INFORME_COBERTURA.md`: entorno, matriz de pruebas, métricas reales y hallazgos.
-- `docs/AUDITORIA_GUIA_14.md`: auditoría punto por punto, estado y evidencias pendientes.
+Estos pasos no se marcan como completados por una prueba automatizada:
 
-### Evidencias manuales y defensa individual
+- [ ] Abrir la app en navegador y comprobar las rutas internas mediante navegación directa y recarga.
+- [ ] Probar el diseño a **375, 768, 1024 y 1440 px**, más 1200 px para documentar el menú de escritorio.
+- [ ] Capturar las pruebas, el spy, el mock y el reporte HTML (el último está disponible como artefacto de la ejecución enlazada arriba).
+- [ ] Anotar una línea/rama no cubierta y una mejora. El informe actual no muestra líneas sin cubrir dentro del alcance medido; se puede documentar la ampliación de cobertura que condujo al 100%.
+- [ ] Ensayar la presentación individual sobre arquitectura, props/estado, responsividad, prueba, mock y cobertura.
+- [ ] Si la evaluación exige EC2: desplegar realmente en Ubuntu/Nginx, probar una ruta interna después de recargar, y guardar la IP/URL y fecha reales.
+- [ ] Preparar el ZIP final solo según la pauta docente; excluir `node_modules` y `coverage` si así se exige.
 
-- [ ] Captura de las pruebas automatizadas aprobadas.
-- [ ] Capturas del spy de persistencia y del mock asíncrono.
-- [ ] Capturas del informe de cobertura y al menos una línea/rama no cubierta con su mejora.
-- [ ] Verificación responsiva a 375, 768, 1024 y 1440 px (más 1200 px para la navegación de escritorio).
-- [ ] Pruebas manuales de navegación, filtro, inscripción, recarga y formulario.
-- [ ] Ensayo individual: problema y arquitectura, props/estado, responsividad, pruebas y mock, cobertura y mejora.
-- [ ] Si se exige publicación EC2: comprobar Nginx y la recarga de una ruta interna, y registrar únicamente URL/IP y fecha reales.
+### Seguridad de dependencias
 
-### Limitaciones de verificación
-
-El repositorio no puede afirmar desde el código que se hayan ejecutado las pruebas, revisado el HTML de cobertura, tomado capturas o desplegado en una instancia EC2 real. Para validar localmente, cambia de Node.js 14 a Node.js 24, o conserva Node.js 22.16 y actualiza npm a la versión 11.6 o posterior. npm 10.9.2 puede fallar al construir el árbol de dependencias con determinadas versiones de Vitest; el error está documentado en [npm/cli #9787](https://github.com/npm/cli/issues/9787). Además, debe ejecutarse `npm install` para sincronizar `package-lock.json` con las dependencias de prueba incorporadas en `package.json`, y luego revisar si el lockfile cambió.
-
-Consulta `docs/AUDITORIA_GUIA_14.md` para la lista de verificación detallada y los estados que siguen dependiendo de ejecución local o evidencia real.
+La ejecución registrada usa React Router `7.18.4` y no reportó vulnerabilidades en `npm audit`. La validación CI incorpora `npm audit fix` sin `--force`; el pipeline no aplica actualizaciones mayores forzadas de forma automática. Revisa el [informe de auditoría de dependencias en GitHub Actions](https://github.com/mrg722/CONECTA-CULTURA/actions/runs/38578919623) cuando necesites el detalle de una ejecución concreta.
