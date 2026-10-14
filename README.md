@@ -384,6 +384,6 @@ El comando de cobertura genera el resumen de consola y el informe HTML en `cover
 
 ### Limitaciones de verificación
 
-El repositorio no puede afirmar desde el código que se hayan ejecutado las pruebas, revisado el HTML de cobertura, tomado capturas o desplegado en una instancia EC2 real. La máquina de desarrollo que usa Node.js 14 debe cambiar a Node.js 22.16.0 (o una versión compatible) antes de validar. Además, debe ejecutarse `npm install` para sincronizar `package-lock.json` con las dependencias de prueba incorporadas en `package.json`, y luego revisar si el lockfile cambió.
+El repositorio no puede afirmar desde el código que se hayan ejecutado las pruebas, revisado el HTML de cobertura, tomado capturas o desplegado en una instancia EC2 real. Para validar localmente, cambia de Node.js 14 a Node.js 24, o conserva Node.js 22.16 y actualiza npm a la versión 11.6 o posterior. npm 10.9.2 puede fallar al construir el árbol de dependencias con determinadas versiones de Vitest; el error está documentado en [npm/cli #9787](https://github.com/npm/cli/issues/9787). Además, debe ejecutarse `npm install` para sincronizar `package-lock.json` con las dependencias de prueba incorporadas en `package.json`, y luego revisar si el lockfile cambió.
 
 Consulta `docs/AUDITORIA_GUIA_14.md` para la lista de verificación detallada y los estados que siguen dependiendo de ejecución local o evidencia real.
