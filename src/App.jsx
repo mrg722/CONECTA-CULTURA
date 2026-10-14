@@ -12,6 +12,7 @@ import Inscripciones from "./pages/Inscripciones";
 import AdminActividades from "./pages/admin/AdminActividades";
 import NoEncontrada from "./pages/NoEncontrada";
 import { actividades } from "./data/actividades";
+import { guardarInscripciones } from "./utils/persistencia";
 
 function App() {
   const [inscripciones, setInscripciones] = useState(() => {
@@ -93,10 +94,7 @@ function App() {
   }
 
   useEffect(() => {
-    localStorage.setItem(
-      "inscripciones",
-      JSON.stringify(inscripciones)
-    );
+    guardarInscripciones(inscripciones);
   }, [inscripciones]);
 
   return (
@@ -106,7 +104,6 @@ function App() {
 
       <Routes>
         <Route path="/" element={<Inicio />} />
-
         <Route
           path="/actividades"
           element={
@@ -116,19 +113,15 @@ function App() {
             />
           }
         />
-
         <Route
           path="/actividades/:id"
           element={<DetalleActividad actividades={actividadesActuales} />}
         />
-
         <Route
           path="/categorias"
           element={<Categorias actividades={actividadesActuales} />}
         />
-
         <Route path="/ofertas" element={<Ofertas />} />
-
         <Route
           path="/inscripciones"
           element={
@@ -138,7 +131,6 @@ function App() {
             />
           }
         />
-
         <Route
           path="/admin/actividades"
           element={
@@ -149,7 +141,6 @@ function App() {
             />
           }
         />
-
         <Route path="*" element={<NoEncontrada />} />
       </Routes>
 

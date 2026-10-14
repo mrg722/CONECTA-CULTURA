@@ -321,7 +321,7 @@ Una vez publicado, completa:
 
 ## Guía 13 — Vitest y React Testing Library
 
-La configuración de pruebas utiliza Vitest, jsdom, React Testing Library, jest-dom y user-event. Se definieron exactamente cinco pruebas:
+La configuración de pruebas utiliza Vitest, jsdom, React Testing Library, jest-dom y user-event. Los cinco casos originales son:
 
 | Prueba | Archivo | Comportamiento |
 |---|---|---|
@@ -331,94 +331,59 @@ La configuración de pruebas utiliza Vitest, jsdom, React Testing Library, jest-
 | 4 | `src/components/TarjetaActividad.spec.jsx` | La tarjeta informa cuando quedan pocos cupos |
 | 5 | `src/components/TarjetaActividad.spec.jsx` | El clic ejecuta `onInscribir` con la actividad correcta |
 
-### Ejecutar las pruebas
+## Guía 14 — Cobertura, mocks y preparación evaluativa
 
-Después de ejecutar `npm install`, ejecuta:
+La Guía 14 amplía las pruebas y documenta cómo interpretar cobertura, relacionar requisitos y ensayar la presentación.
+
+### Diez criterios principales
+
+| N.º | Criterio | Archivo |
+|---|---|---|
+| 1 | Precio cero muestra **Gratis** | `src/utils/precio.spec.jsx` |
+| 2 | Precio positivo se formatea con separador de miles | `src/utils/precio.spec.jsx` |
+| 3 | Tarjeta muestra el nombre recibido por props | `src/components/TarjetaActividad.spec.jsx` |
+| 4 | Los cupos críticos muestran aviso | `src/components/TarjetaActividad.spec.jsx` |
+| 5 | Con cero cupos se deshabilita el botón | `src/components/TarjetaActividad.spec.jsx` |
+| 6 | La tarjeta muestra la categoría recibida por props | `src/components/TarjetaActividad.spec.jsx` |
+| 7 | El clic llama a `onInscribir` con la actividad | `src/components/TarjetaActividad.spec.jsx` |
+| 8 | El filtro actualiza los resultados | `src/pages/Actividades.spec.jsx` |
+| 9 | Guardar utiliza `localStorage` con clave y JSON correctos | `src/utils/persistencia.spec.js` |
+| 10 | Actividad inexistente muestra un mensaje | `src/pages/DetalleActividad.spec.jsx` |
+
+La sección 7 de la propia guía solicita además una prueba separada del mock asíncrono. Para cubrir ambos bloques, se añade una prueba didáctica en `src/services/actividades.spec.js`; por eso los archivos contienen **diez casos de la matriz más un caso demostrativo de mock (once en total)**. La matriz principal enumera diez criterios y la prueba adicional proviene de la sección explicativa sobre mocks; esta diferencia está documentada en `docs/AUDITORIA_GUIA_14.md`.
+
+### Ejecutar pruebas y cobertura
+
+Desde la raíz del proyecto, usando Node.js compatible con Vite 8:
 
 ```powershell
+npm install
 npm run test:run
-```
-
-El resultado esperado son **cinco pruebas aprobadas**. Si aparece un error, revisa el nombre del archivo, la ruta de importación, el entorno jsdom y la salida del comparador.
-
-Para ejecutar las pruebas en modo de observación:
-
-```powershell
-npm test
-```
-
-Para generar cobertura:
-
-```powershell
 npm run coverage
+npm run lint
+npm run build
 ```
 
-La carpeta generada `coverage` queda excluida de Git.
+El comando de cobertura genera el resumen de consola y el informe HTML en `coverage/index.html`. En `docs/INFORME_COBERTURA.md` se debe registrar la salida real: Statements, Branches, Functions y Lines, las líneas o ramas no cubiertas, los riesgos y las mejoras. No se rellenan porcentajes antes de la ejecución.
 
-### Ejercicio de la guía: provocar un fallo y restaurar
+### Documentación evaluativa
 
-1. Abre temporalmente `src/utils/precio.spec.jsx`.
-2. Cambia el resultado esperado `"Gratis"` por un texto incorrecto.
-3. Ejecuta `npm run test:run` y lee el mensaje que identifica la prueba fallida.
-4. Restaura el resultado esperado a `"Gratis"`.
-5. Vuelve a ejecutar `npm run test:run` y comprueba que las cinco pruebas queden aprobadas.
+- `docs/ERS.md`: arquitectura, mapa de rutas, requisitos funcionales/no funcionales y matriz de trazabilidad.
+- `docs/INFORME_COBERTURA.md`: entorno, matriz de pruebas, métricas reales y hallazgos.
+- `docs/AUDITORIA_GUIA_14.md`: auditoría punto por punto, estado y evidencias pendientes.
 
-No dejes ni registres una prueba modificada intencionalmente para que falle.
+### Evidencias manuales y defensa individual
 
-- [ ] Guardar captura de dependencias, configuración y comandos.
-- [ ] Guardar captura de las cinco pruebas aprobadas.
-- [ ] Guardar captura de la prueba de contenido/props.
-- [ ] Guardar captura de `vi.fn` verificando el evento.
-- [ ] Documentar qué requisito cubre cada prueba; la tabla anterior sirve como referencia.
-- [ ] Ejecutar `npm run lint` y `npm run build` después de incorporar las herramientas.
+- [ ] Captura de las pruebas automatizadas aprobadas.
+- [ ] Capturas del spy de persistencia y del mock asíncrono.
+- [ ] Capturas del informe de cobertura y al menos una línea/rama no cubierta con su mejora.
+- [ ] Verificación responsiva a 375, 768, 1024 y 1440 px (más 1200 px para la navegación de escritorio).
+- [ ] Pruebas manuales de navegación, filtro, inscripción, recarga y formulario.
+- [ ] Ensayo individual: problema y arquitectura, props/estado, responsividad, pruebas y mock, cobertura y mejora.
+- [ ] Si se exige publicación EC2: comprobar Nginx y la recarga de una ruta interna, y registrar únicamente URL/IP y fecha reales.
 
-## Estado de cierre
+### Limitaciones de verificación
 
-### Implementación presente en el código
+El repositorio no puede afirmar desde el código que se hayan ejecutado las pruebas, revisado el HTML de cobertura, tomado capturas o desplegado en una instancia EC2 real. La máquina de desarrollo que usa Node.js 14 debe cambiar a Node.js 22.16.0 (o una versión compatible) antes de validar. Además, debe ejecutarse `npm install` para sincronizar `package-lock.json` con las dependencias de prueba incorporadas en `package.json`, y luego revisar si el lockfile cambió.
 
-- [x] Guía 9: componentes, pie de página, portada e imagen.
-- [x] Guía 10: ocho actividades, cinco categorías, filtro e inscripciones.
-- [x] Guía 11: rutas, vista 404, formulario controlado, Create y Delete.
-- [x] Guía 12: grilla responsiva, estilos base adaptables y configuración de instrucciones de producción/Nginx.
-- [x] Guía 13: configuración de Vitest y cinco casos de prueba.
-- [x] `.gitignore` excluye `node_modules`, `dist`, `coverage` y archivos `.pem`.
-
-### Pendiente de verificación externa o ejecución local
-
-- [ ] Sincronizar `package-lock.json` ejecutando `npm install` en la copia local.
-- [ ] Ejecutar `npm run test:run` y comprobar las cinco pruebas.
-- [ ] Ejecutar `npm run lint` y `npm run build`.
-- [ ] Completar matriz responsiva y guardar capturas.
-- [ ] Ejecutar las pruebas manuales de las Guías 9, 10 y 11.
-- [ ] Desplegar en la instancia EC2 real, probar el fallback de rutas y registrar URL/IP y fecha.
-
-La configuración de EC2 no se considera terminada solo por escribir sus instrucciones: debe verificarse en la instancia real.
-
-## Git
-
-Antes de registrar cambios, comprueba el estado:
-
-```powershell
-git status
-```
-
-Revisa las diferencias:
-
-```powershell
-git diff
-```
-
-Agrega solo los archivos que correspondan al trabajo terminado. Para registrar una actualización del README, por ejemplo:
-
-```powershell
-git add README.md
-git commit -m "docs: actualizar instrucciones y pruebas del proyecto"
-```
-
-Comprueba después:
-
-```powershell
-git status
-```
-
-La rama principal del proyecto es `main`.
+Consulta `docs/AUDITORIA_GUIA_14.md` para la lista de verificación detallada y los estados que siguen dependiendo de ejecución local o evidencia real.
