@@ -2,89 +2,127 @@
 
 **Asignatura:** DSY1104 · Desarrollo FullStack II  
 **Experiencia:** EA2 — React, responsividad y pruebas unitarias  
-**Estado:** plantilla preparada; completar después de ejecutar las pruebas en un entorno con dependencias instaladas.
+**Fecha del informe:** 14-10-2026  
+**Ejecución de referencia:** [GitHub Actions, validación completada](https://github.com/mrg722/CONECTA-CULTURA/actions/runs/38578919623)  
+**Estado:** pruebas, cobertura, lint y compilación aprobados automáticamente.
 
 ## 1. Entorno y ejecución
 
-Registrar los datos reales de la ejecución:
-
-| Campo | Dato |
+| Campo | Resultado verificado |
 |---|---|
-| Sistema operativo | Pendiente de registrar |
-| Versión de Node.js | Pendiente de registrar |
-| Versión de npm | Pendiente de registrar |
-| Navegador usado para verificación manual | Pendiente de registrar |
-| Fecha de ejecución | Pendiente de registrar |
+| Entorno de CI | GitHub Actions, `ubuntu-latest` |
+| Node.js | 24.x |
+| npm | 11.x |
+| Framework de pruebas | Vitest 4.1.11 |
+| Archivos de prueba | 9 aprobados |
+| Pruebas | 22 aprobadas, 0 fallidas |
 | Comando de pruebas | `npm run test:run` |
 | Comando de cobertura | `npm run coverage` |
-| Comando de compilación | `npm run build` |
+| Lint | `npm run lint`, terminado sin errores ni advertencias ESLint |
+| Build | `npm run build`, terminado correctamente |
+| Auditoría npm | 0 vulnerabilidades conocidas en la ejecución enlazada |
 
-No rellenar las métricas con valores supuestos ni basarse en ejecuciones previas a los últimos cambios.
+El workflow publicó los artefactos `informe-cobertura` y `auditoria-dependencias`. El HTML de cobertura queda disponible como artefacto en la ejecución enlazada; GitHub conserva el artefacto durante 14 días según la configuración del workflow.
 
-## 2. Alcance
+## 2. Alcance de la medición
 
-Se consideran las funciones y vistas de la aplicación que se incluyen en el código fuente de `src`. El informe V8 incluye archivos JavaScript/JSX de producción y excluye los archivos de prueba y la configuración de preparación.
+La configuración V8 incluye archivos de producción con el patrón `src/**/*.{js,jsx}` y excluye archivos de pruebas, la configuración de preparación y `src/main.jsx` (punto de entrada que conecta la app con el DOM). La medición abarca:
 
-La aplicación es un prototipo que mantiene actividades en estado React y guarda inscripciones en `localStorage`. No representa una API remota ni una base de datos del servidor. El ejemplo de servicio asíncrono simulado es didáctico y no se conecta con la aplicación real.
+- Estado, rutas, inscripción y persistencia coordinados desde `src/App.jsx`.
+- Componentes reutilizables y páginas públicas.
+- Vistas y formulario administrativo.
+- Datos estáticos de actividades.
+- Utilidades de formato/precio y persistencia.
+- Ejemplo didáctico de servicio asíncrono usado para aprender mocks.
+
+La aplicación sigue siendo un prototipo de frontend: no cuenta con API remota ni base de datos de servidor. El ejemplo de servicio asíncrono está aislado para la práctica y no se conecta con la aplicación real. Las inscripciones se guardan en `localStorage`, por lo que son locales al navegador y no representan persistencia multiusuario.
 
 ## 3. Matriz de requisitos y pruebas
 
-| ID | Criterio de aceptación | Archivo de prueba | Resultado real |
+| ID | Criterio de aceptación | Archivo(s) de prueba | Resultado |
 |---|---|---|---|
-| P01 | El precio cero se muestra como «Gratis» | `src/utils/precio.spec.jsx` | Pendiente de ejecutar |
-| P02 | El precio positivo incluye el separador de miles | `src/utils/precio.spec.jsx` | Pendiente de ejecutar |
-| P03 | La tarjeta presenta el nombre recibido por props | `src/components/TarjetaActividad.spec.jsx` | Pendiente de ejecutar |
-| P04 | Los cupos críticos generan el aviso | `src/components/TarjetaActividad.spec.jsx` | Pendiente de ejecutar |
-| P05 | El botón de inscripción queda deshabilitado con cero cupos | `src/components/TarjetaActividad.spec.jsx` | Pendiente de ejecutar |
-| P06 | La tarjeta presenta la categoría recibida por props | `src/components/TarjetaActividad.spec.jsx` | Pendiente de ejecutar |
-| P07 | El clic llama a `onInscribir` con la actividad correcta | `src/components/TarjetaActividad.spec.jsx` | Pendiente de ejecutar |
-| P08 | El filtro cambia los resultados visibles | `src/pages/Actividades.spec.jsx` | Pendiente de ejecutar |
-| P09 | La persistencia llama a `localStorage.setItem` con la clave y JSON correctos | `src/utils/persistencia.spec.js` | Pendiente de ejecutar |
-| P10 | Una actividad inexistente muestra un mensaje | `src/pages/DetalleActividad.spec.jsx` | Pendiente de ejecutar |
-| P11 | El mock asíncrono devuelve los nombres previstos sin red real | `src/services/actividades.spec.js` | Pendiente de ejecutar |
+| P01 | El precio cero se muestra como «Gratis» | `src/utils/precio.spec.jsx` | Aprobado |
+| P02 | El precio positivo incluye separador de miles | `src/utils/precio.spec.jsx` | Aprobado |
+| P03 | La tarjeta presenta el nombre recibido por props | `src/components/TarjetaActividad.spec.jsx` | Aprobado |
+| P04 | Los cupos críticos generan el aviso | `src/components/TarjetaActividad.spec.jsx` | Aprobado |
+| P05 | El botón queda deshabilitado con cero cupos | `src/components/TarjetaActividad.spec.jsx` | Aprobado |
+| P06 | La tarjeta presenta la categoría recibida por props | `src/components/TarjetaActividad.spec.jsx` | Aprobado |
+| P07 | El clic llama a `onInscribir` con la actividad correcta | `src/components/TarjetaActividad.spec.jsx` | Aprobado |
+| P08 | El filtro cambia los resultados visibles | `src/pages/Actividades.spec.jsx` | Aprobado |
+| P09 | Guardar llama a `localStorage.setItem` con clave y JSON correctos | `src/utils/persistencia.spec.js` | Aprobado |
+| P10 | Una actividad inexistente muestra un mensaje | `src/pages/DetalleActividad.spec.jsx` | Aprobado |
+| P11 | El servicio asíncrono simulado devuelve los nombres esperados | `src/services/actividades.spec.js` | Aprobado |
+| P12 | Una actividad existente muestra su detalle | `src/pages/DetalleActividad.spec.jsx` | Aprobado |
+| P13 | Se muestra portada, navegación, imagen y pie de página | `src/App.spec.jsx` | Aprobado |
+| P14 | Inscribir actualiza cupos y evita duplicados | `src/App.spec.jsx` | Aprobado |
+| P15 | Eliminar inscripción persiste el cambio y devuelve cupo | `src/App.spec.jsx` | Aprobado |
+| P16 | La administración permite crear y borrar una actividad | `src/App.spec.jsx` | Aprobado |
+| P17 | Categorías, ofertas y 404 renderizan el resultado esperado | `src/App.spec.jsx` | Aprobado |
+| P18 | Los campos vacíos muestran mensajes de validación | `src/pages/admin/FormularioActividad.spec.jsx` | Aprobado |
+| P19 | Los cupos negativos son rechazados | `src/pages/admin/FormularioActividad.spec.jsx` | Aprobado |
+| P20 | El manejador no acepta una inscripción sin cupos disponibles | `src/App.cupos.spec.jsx` | Aprobado |
 
-**Nota sobre el alcance de la guía:** la tabla principal de la Guía 14 enumera diez comportamientos. La sección 7 también solicita una prueba autónoma del mock de servicio asíncrono; se conserva como prueba adicional, por lo que el repositorio define diez pruebas de la matriz principal más una prueba demostrativa (once en total). Si la pauta de evaluación exige exactamente diez casos contabilizados, el docente debe indicar si esa demostración debe quedar fuera del conteo.
+La matriz principal de la Guía 14 especifica diez comportamientos. La sección de mock asíncrono pide un ejemplo adicional y se agregaron pruebas complementarias de flujo y administración. Por eso el total verificado del repositorio es **22 pruebas**, no solo las diez iniciales.
 
-## 4. Métricas reales
-
-Después de ejecutar `npm run coverage`, trasladar los porcentajes de la salida de Vitest:
+## 4. Métricas V8 verificadas
 
 | Métrica | Resultado |
 |---|---:|
-| Statements | Pendiente |
-| Branches | Pendiente |
-| Functions | Pendiente |
-| Lines | Pendiente |
+| Statements (sentencias) | 100% |
+| Branches (ramas) | 100% |
+| Functions (funciones) | 100% |
+| Lines (líneas) | 100% |
+| Líneas sin cubrir en el alcance medido | Ninguna |
 
-El informe detallado debe abrirse en `coverage/index.html`. La salida de consola y el HTML deben corresponder a la misma ejecución.
+Estos resultados corresponden a la ejecución enlazada del 14-10-2026 después de ampliar las pruebas para incluir las ramas de la aplicación, detalles válidos/no válidos y las validaciones administrativas.
 
-## 5. Cómo interpretar los resultados
+## 5. Interpretación
 
 - **Statements:** instrucciones ejecutadas al menos una vez.
-- **Branches:** alternativas de condiciones, como verdadero/falso de un `if`.
-- **Functions:** funciones llamadas durante las pruebas.
-- **Lines:** líneas ejecutables recorridas durante las pruebas.
+- **Branches:** alternativas condicionales recorridas, por ejemplo los resultados verdadero/falso de una condición.
+- **Functions:** funciones invocadas por las pruebas.
+- **Lines:** líneas ejecutables recorridas.
 
-Una cobertura alta no demuestra por sí sola que las expectativas sean buenas. Para cada línea o rama no cubierta, registrar si el comportamiento requiere otra prueba, si el código es inalcanzable o si está fuera del alcance de esta entrega.
+Una cobertura alta no garantiza por sí sola que todas las expectativas sean correctas ni sustituye las pruebas manuales de aceptación. El 100% de este informe indica que todas las sentencias, ramas, funciones y líneas incluidas en el alcance declarado fueron recorridas en esa ejecución.
 
-## 6. Hallazgos y acciones de mejora
+## 6. Hallazgos y mejoras implementadas
 
-Completar después de revisar `coverage/index.html`:
-
-| Archivo o línea sin cubrir | Riesgo del comportamiento | Prueba o corrección propuesta | Estado |
+| Hallazgo inicial | Riesgo | Mejora implementada | Resultado |
 |---|---|---|---|
-| Pendiente de revisar el informe real | Pendiente | Pendiente | Pendiente |
+| Escritura de localStorage directa dentro de `App.jsx` | Difícil probar el contrato de persistencia de forma aislada | Se extrajo `guardarInscripciones` a `src/utils/persistencia.js` y se cubrió mediante spy | Cubierto |
+| No había prueba dedicada para actividad inexistente | La ruta de error podía quedar sin verificar | Se agregó test de detalle inexistente y otro de detalle válido | Cubierto |
+| Faltaba prueba directa de la rama de cupos agotados en el manejador | Podía regresionar la protección ante una llamada directa | Se agregó `src/App.cupos.spec.jsx` | Cubierto |
+| Faltaban pruebas de administración y validación del formulario | Errores de campos y altas/bajas podían pasar inadvertidos | Se agregaron pruebas de crear/eliminar, campos vacíos y cupos negativos | Cubierto |
+| Lockfile desincronizado y avisos de dependencias anteriores | Instalación no reproducible y paquetes con avisos de seguridad conocidos | Se sincronizó `package-lock.json`, se actualizó React Router y el workflow registró `npm audit` con total 0 | Corregido en la ejecución referenciada |
 
-## 7. Comandos de verificación
+La configuración de GitHub Actions instala dependencias, registra los cambios del lockfile cuando corresponde, ejecuta `npm audit`, las pruebas, la cobertura, ESLint y la compilación. Las actualizaciones de dependencias se aplican sin `--force`.
 
-Ejecutar dentro de la raíz del repositorio, usando Node.js compatible con las versiones configuradas:
+## 7. Cómo repetir la verificación
+
+Desde la carpeta raíz del repositorio, usa Node.js 24 o una versión compatible y las dependencias instaladas:
 
 ```bash
-npm install
+npm ci
 npm run test:run
 npm run coverage
 npm run lint
 npm run build
 ```
 
-Guardar capturas de: todas las pruebas aprobadas, una prueba de interacción, el spy de persistencia, el mock con `vi.fn`, el resumen de cobertura y una línea/rama descubierta junto con la mejora realizada.
+El informe HTML local se genera en `coverage/index.html`. No modifiques archivos dentro de `coverage`: son salidas generadas. Para comprobar los resultados actuales del repo, abre la ejecución enlazada de GitHub Actions y consulta el artefacto `informe-cobertura`.
+
+## 8. Evidencias manuales pendientes
+
+Estas actividades necesitan comprobación directa por el equipo y no se presentan como completadas por la ejecución automatizada:
+
+- [ ] Captura del resumen de las 22 pruebas aprobadas.
+- [ ] Captura de una prueba de interacción.
+- [ ] Captura de `vi.spyOn` y la llamada a `setItem`.
+- [ ] Captura de `vi.fn().mockResolvedValue`.
+- [ ] Captura del informe HTML y sus cuatro métricas.
+- [ ] Capturas responsivas a 375, 768, 1024 y 1440 px, y 1200 px para navegación de escritorio.
+- [ ] Verificación manual de navegación directa, recarga, formulario y accesibilidad básica.
+- [ ] Si la evaluación exige EC2, captura de Nginx sirviendo el sitio y de una ruta interna tras recargar, con URL/IP y fecha reales.
+- [ ] Ensayo individual de cada integrante y evidencia de sus aportes reales.
+
+No se inventan porcentajes, capturas, IP de despliegue ni resultados de comprobación manual.
