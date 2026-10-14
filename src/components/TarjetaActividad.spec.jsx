@@ -16,7 +16,7 @@ describe("TarjetaActividad", () => {
 
   it("muestra el nombre recibido mediante props", () => {
     render(
-      <MemoryRouter>
+      <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <TarjetaActividad actividad={actividad} onInscribir={vi.fn()} />
       </MemoryRouter>
     );
@@ -25,7 +25,7 @@ describe("TarjetaActividad", () => {
 
   it("muestra el aviso cuando quedan pocos cupos", () => {
     render(
-      <MemoryRouter>
+      <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <TarjetaActividad actividad={actividad} onInscribir={vi.fn()} />
       </MemoryRouter>
     );
@@ -41,7 +41,7 @@ describe("TarjetaActividad", () => {
       cupos: 0
     };
     render(
-      <MemoryRouter>
+      <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <TarjetaActividad actividad={actividadAgotada} onInscribir={vi.fn()} />
       </MemoryRouter>
     );
@@ -51,7 +51,7 @@ describe("TarjetaActividad", () => {
 
   it("muestra la categoría recibida mediante props", () => {
     render(
-      <MemoryRouter>
+      <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <TarjetaActividad actividad={actividad} onInscribir={vi.fn()} />
       </MemoryRouter>
     );
@@ -62,7 +62,7 @@ describe("TarjetaActividad", () => {
     const usuario = userEvent.setup();
     const onInscribir = vi.fn();
     render(
-      <MemoryRouter>
+      <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <TarjetaActividad actividad={actividad} onInscribir={onInscribir} />
       </MemoryRouter>
     );

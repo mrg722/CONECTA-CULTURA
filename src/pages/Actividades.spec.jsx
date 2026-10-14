@@ -27,7 +27,7 @@ describe("Actividades", () => {
     ];
 
     render(
-      <MemoryRouter>
+      <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <Actividades actividades={actividades} onInscribir={vi.fn()} />
       </MemoryRouter>
     );

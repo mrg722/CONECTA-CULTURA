@@ -17,10 +17,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Obtener el repositorio
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Configurar Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: 24
           cache: npm
@@ -46,6 +46,33 @@ jobs:
           git commit -m "chore: sincronizar package-lock.json"
           git push
 
+      - name: Diagnosticar vulnerabilidades de dependencias
+        run: |
+          npm audit --json > npm-audit.json || true
+          node <<'NODE'
+          const fs = require("node:fs");
+          try {
+            const reporte = JSON.parse(fs.readFileSync("npm-audit.json", "utf8"));
+            console.log("Resumen de npm audit:", JSON.stringify(reporte.metadata?.vulnerabilities || {}));
+            for (const [paquete, dato] of Object.entries(reporte.vulnerabilities || {})) {
+              const avisos = dato.via.map((aviso) =>
+                typeof aviso === "string"
+                  ? aviso
+                  : { titulo: aviso.title, url: aviso.url, rango: aviso.range }
+              );
+              console.log(JSON.stringify({
+                paquete,
+                severidad: dato.severity,
+                dependenciaDirecta: dato.isDirect,
+                avisos,
+                correccionDisponible: dato.fixAvailable
+              }));
+            }
+          } catch (error) {
+            console.log("No se pudo interpretar el informe de npm audit:", error.message);
+          }
+          NODE
+
       - name: Ejecutar pruebas automatizadas
         run: npm run test:run
 
@@ -59,9 +86,17 @@ jobs:
         run: npm run build
 
       - name: Publicar el informe HTML de cobertura como artefacto
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: informe-cobertura
           path: coverage/index.html
           if-no-files-found: error
+          retention-days: 14
+
+      - name: Publicar el reporte de seguridad de dependencias
+        uses: actions/upload-artifact@v7
+        with:
+          name: auditoria-dependencias
+          path: npm-audit.json
+          if-no-files-found: warn
           retention-days: 14

@@ -17,7 +17,7 @@ describe("DetalleActividad", () => {
     ];
 
     render(
-      <MemoryRouter initialEntries={["/actividades/2"]}>
+      <MemoryRouter initialEntries={["/actividades/2"]} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <Routes>
           <Route
             path="/actividades/:id"
@@ -37,7 +37,7 @@ describe("DetalleActividad", () => {
 
   it("muestra un mensaje cuando la actividad solicitada no existe", () => {
     render(
-      <MemoryRouter initialEntries={["/actividades/999"]}>
+      <MemoryRouter initialEntries={["/actividades/999"]} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <Routes>
           <Route
             path="/actividades/:id"
