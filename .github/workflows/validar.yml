@@ -32,6 +32,7 @@ jobs:
             rm -f package-lock.json
             npm install
           }
+          npm audit fix || echo "La auditoría sigue mostrando avisos; se documentarán para revisión manual."
 
       - name: Registrar el lockfile sincronizado en main
         if: github.event_name == 'push'
