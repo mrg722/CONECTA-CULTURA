@@ -1,0 +1,49 @@
+name: Validar Conecta Cultura
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  validar:
+    name: Pruebas, cobertura y compilación
+    runs-on: ubuntu-latest
+    steps:
+      - name: Obtener el repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.16.0
+          cache: npm
+
+      - name: Instalar dependencias y sincronizar el lockfile del entorno
+        run: npm install
+
+      - name: Ejecutar pruebas automatizadas
+        run: npm run test:run
+
+      - name: Generar informe de cobertura
+        run: npm run coverage
+
+      - name: Revisar estilo y posibles errores
+        run: npm run lint
+
+      - name: Construir para producción
+        run: npm run build
+
+      - name: Publicar el informe HTML de cobertura como artefacto
+        uses: actions/upload-artifact@v4
+        with:
+          name: informe-cobertura
+          path: coverage/index.html
+          if-no-files-found: error
+          retention-days: 14
