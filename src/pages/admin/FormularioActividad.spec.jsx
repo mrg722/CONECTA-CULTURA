@@ -16,7 +16,9 @@ describe("FormularioActividad", () => {
     await usuario.click(screen.getByRole("button", { name: "Guardar" }));
 
     expect(screen.getByText("Nombre obligatorio")).toBeInTheDocument();
-    expect(screen.getByText("Selecciona categoría")).toBeInTheDocument();
+    expect(
+      screen.getByText("Selecciona categoría", { selector: ".invalid-feedback" })
+    ).toBeInTheDocument();
     expect(screen.getByText("Cupos obligatorios")).toBeInTheDocument();
     expect(onGuardar).not.toHaveBeenCalled();
   });
