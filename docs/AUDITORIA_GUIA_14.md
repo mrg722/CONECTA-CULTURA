@@ -11,7 +11,7 @@
 - No existía una función aislada `guardarInscripciones`; `App.jsx` llamaba a `localStorage.setItem` directamente.
 - Faltaban pruebas automatizadas para cupos cero, categoría recibida por props, el filtro, la persistencia observada con spy y actividad inexistente.
 - El informe de cobertura y la actualización formal del ERS no estaban documentados como archivos separados.
-- `package-lock.json` no contiene las nuevas dependencias de Vitest/Testing Library de `package.json`; debe sincronizarse con `npm install` desde Node compatible. No conviene ejecutar `npm ci` antes de sincronizarlo.
+- `package-lock.json` no contiene las nuevas dependencias de Vitest/Testing Library de `package.json`. El flujo de CI intenta regenerarlo con Node.js 24 (npm 11) y registrar el lockfile si cambió; la sincronización debe confirmarse en el resultado de esa ejecución.
 
 ## Matriz de implementación
 
@@ -49,7 +49,7 @@ npm run lint
 npm run build
 ```
 
-El proyecto ya tuvo fallos de ejecución local con Node.js 14 por ser demasiado antiguo para las versiones actuales de Vite/Vitest/ESLint. En esa máquina, cambiar a Node.js 22.16.0 o a otra versión que satisfaga Vite 8 antes de ejecutar las verificaciones. Después de `npm install`, revisar `git status` y registrar el `package-lock.json` actualizado.
+El proyecto ya tuvo fallos locales con Node.js 14. Además, la ejecución de CI detectó el error de npm `Cannot read properties of null (reading 'edgesOut')` con npm 10.9.2. El flujo se cambió a Node.js 24/npm 11; el caso de npm está documentado en [npm/cli #9787](https://github.com/npm/cli/issues/9787). Confirmar que el lockfile regenerado aparece en `main` y que luego pasan pruebas, cobertura, lint y compilación.
 
 ## Evidencias que deben producirse de verdad
 
