@@ -2,7 +2,97 @@
 
 Aplicación de **DSY1104 · Desarrollo FullStack II**, desarrollada con React, Vite, Bootstrap y React Bootstrap.
 
-Este repositorio incorpora los trabajos autónomos de las Guías 9, 10 y 11, la grilla responsiva y el flujo de despliegue de la Guía 12, y la configuración de pruebas de la Guía 13. Las pruebas manuales, las capturas y la publicación real en EC2 deben verificarse en el entorno donde se ejecuta el proyecto; no se marcan como realizadas antes de comprobarlas.
+Este repositorio incorpora los trabajos autónomos de las Guías 9, 10 y 11, la grilla responsiva y el flujo de despliegue de la Guía 12, la configuración de pruebas de la Guía 13, y el backend Spring Boot con API REST, CRUD completo y autenticación JWT de las Guías 15, 16 y 17. Las pruebas manuales, las capturas y la publicación real en EC2 deben verificarse en el entorno donde se ejecuta el proyecto; no se marcan como realizadas antes de comprobarlas.
+
+## Estructura del repositorio
+
+El repositorio reúne el frontend y el backend:
+
+| Ruta | Contenido |
+| --- | --- |
+| raíz (`src/`, `index.html`, `vite.config.js`) | Frontend React + Vite |
+| `backend/` | Backend Spring Boot (`cl.duoc.conectacultura`) |
+| `docs/` | ERS, informes y auditorías |
+
+El detalle de qué pide cada guía y dónde quedó está en
+[`docs/INTEGRACION_GUIAS_15_16_17.md`](docs/INTEGRACION_GUIAS_15_16_17.md).
+
+## Ejecutar el backend (Guías 15 y 17)
+
+El backend necesita Java 17 o superior y las variables de entorno de la base de
+datos y del token. Las claves nunca se escriben en el repositorio.
+
+### Con MySQL
+
+Crea la base y la cuenta de la aplicación:
+
+```sql
+CREATE DATABASE conecta_cultura
+  CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+CREATE USER 'conecta_app'@'localhost'
+  IDENTIFIED BY 'CAMBIAR_CLAVE';
+
+GRANT ALL PRIVILEGES ON conecta_cultura.*
+  TO 'conecta_app'@'localhost';
+FLUSH PRIVILEGES;
+```
+
+Luego, en PowerShell dentro de `backend`:
+
+```powershell
+$env:DB_USER="conecta_app"
+$env:DB_PASSWORD="CAMBIAR_CLAVE"
+$env:JWT_SECRET="valor-de-al-menos-32-caracteres"
+$env:ADMIN_PASSWORD="clave-del-administrador"
+$env:USER_PASSWORD="clave-del-usuario"
+.\mvnw.cmd spring-boot:run
+```
+
+`ADMIN_PASSWORD` y `USER_PASSWORD` crean las cuentas `admin` (rol ADMIN) y
+`usuario` (rol USER) la primera vez que se inician, para comprobar la matriz de
+permisos. Si no se entregan, no se crea ninguna cuenta.
+
+### Sin MySQL, con H2 en memoria
+
+Para probar la API sin instalar MySQL existe el perfil `dev`:
+
+```powershell
+$env:JWT_SECRET="valor-de-al-menos-32-caracteres"
+$env:ADMIN_PASSWORD="clave-del-administrador"
+$env:USER_PASSWORD="clave-del-usuario"
+.\mvnw.cmd spring-boot:run "-Dspring-boot.run.profiles=dev"
+```
+
+Los datos de este perfil se pierden al detener la aplicación.
+
+### Comprobar la API
+
+Con el backend en marcha:
+
+- Swagger UI: <http://localhost:8080/swagger-ui/index.html>
+- Contrato OpenAPI: <http://localhost:8080/v3/api-docs>
+
+Para ejecutar las pruebas del backend, dentro de `backend`:
+
+```powershell
+.\mvnw.cmd test
+```
+
+## Ejecutar el frontend contra la API
+
+El frontend lee la dirección de la API desde `.env.development`, que ya apunta a
+`http://localhost:8080/api`. Con el backend levantado, en la raíz del
+repositorio:
+
+```powershell
+npm install
+npm run dev
+```
+
+La aplicación queda en <http://localhost:5173>, que es el único origen que el
+backend autoriza por CORS. Las lecturas son públicas; crear, editar y eliminar
+exigen iniciar sesión con la cuenta de rol ADMIN desde **Iniciar sesión**.
 
 ## Ejecutar el proyecto en Windows
 
@@ -89,11 +179,17 @@ http://localhost:5173/actividades/999
 http://localhost:5173/categorias
 http://localhost:5173/ofertas
 http://localhost:5173/inscripciones
+http://localhost:5173/login
 http://localhost:5173/admin/actividades
+http://localhost:5173/admin/actividades/nueva
+http://localhost:5173/admin/actividades/1/editar
 http://localhost:5173/esta-ruta-no-existe
 ```
 
 La dirección con el número `999` debe mostrar que la actividad no existe. La dirección `/esta-ruta-no-existe` debe mostrar la página 404.
+
+Las tres direcciones de `/admin` exigen una sesión con rol ADMIN: sin sesión
+redirigen a `/login` y con rol USER vuelven al inicio.
 
 ## Guía 9 — Componentes React y React Bootstrap
 

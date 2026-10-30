@@ -2,3 +2,5 @@ node_modules/
 dist/
 coverage/
 *.pem
+.env.local
+.env.*.local

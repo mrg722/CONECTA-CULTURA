@@ -1,7 +1,16 @@
-import { Container, Nav, Navbar } from "react-bootstrap";
-import { NavLink } from "react-router-dom";
+import { Button, Container, Nav, Navbar } from "react-bootstrap";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 function Navegacion() {
+  const { usuario, logout } = useAuth();
+  const navigate = useNavigate();
+
+  function cerrarSesion() {
+    logout();
+    navigate("/", { replace: true });
+  }
+
   return (
     <Navbar expand="md" bg="light" data-bs-theme="light">
       <Container>
@@ -12,7 +21,7 @@ function Navegacion() {
         <Navbar.Toggle aria-controls="menu-principal" />
 
         <Navbar.Collapse id="menu-principal">
-          <Nav className="ms-auto">
+          <Nav className="ms-auto align-items-md-center">
             <Nav.Link as={NavLink} to="/" end>
               Inicio
             </Nav.Link>
@@ -28,9 +37,31 @@ function Navegacion() {
             <Nav.Link as={NavLink} to="/inscripciones">
               Inscripciones
             </Nav.Link>
-            <Nav.Link as={NavLink} to="/admin/actividades">
-              Administración
-            </Nav.Link>
+
+            {usuario?.rol === "ADMIN" && (
+              <Nav.Link as={NavLink} to="/admin/actividades">
+                Administración
+              </Nav.Link>
+            )}
+
+            {usuario ? (
+              <>
+                <span className="navbar-text me-2">
+                  {usuario.usuario} ({usuario.rol})
+                </span>
+                <Button
+                  variant="outline-secondary"
+                  size="sm"
+                  onClick={cerrarSesion}
+                >
+                  Cerrar sesión
+                </Button>
+              </>
+            ) : (
+              <Nav.Link as={NavLink} to="/login">
+                Iniciar sesión
+              </Nav.Link>
+            )}
           </Nav>
         </Navbar.Collapse>
       </Container>

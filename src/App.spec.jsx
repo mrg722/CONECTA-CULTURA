@@ -1,24 +1,70 @@
 import { cleanup, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { MemoryRouter } from "react-router-dom";
+
+vi.mock("./services/actividadService", () => ({
+  listarActividades: vi.fn(),
+  buscarActividad: vi.fn(),
+  crearActividad: vi.fn(),
+  actualizarActividad: vi.fn(),
+  eliminarActividad: vi.fn()
+}));
+
+import {
+  eliminarActividad,
+  listarActividades
+} from "./services/actividadService";
 import App from "./App";
+import { AuthProvider } from "./context/AuthProvider";
 
 const futuroRouter = {
   v7_startTransition: true,
   v7_relativeSplatPath: true
 };
 
+const catalogo = [
+  {
+    id: 1,
+    nombre: "Taller de guitarra",
+    categoria: "Música",
+    descripcion: "Taller introductorio para aprender acordes básicos.",
+    precio: 0,
+    cupos: 12
+  },
+  {
+    id: 2,
+    nombre: "Acuarela inicial",
+    categoria: "Artes visuales",
+    descripcion: "Color y técnicas.",
+    precio: 5000,
+    cupos: 6
+  }
+];
+
 function renderApp(ruta) {
   return render(
     <MemoryRouter initialEntries={[ruta]} future={futuroRouter}>
-      <App />
+      <AuthProvider>
+        <App />
+      </AuthProvider>
     </MemoryRouter>
+  );
+}
+
+function sesion(rol) {
+  sessionStorage.setItem("token", "token-de-prueba");
+  sessionStorage.setItem(
+    "usuario",
+    JSON.stringify({ usuario: rol.toLowerCase(), rol })
   );
 }
 
 beforeEach(() => {
   localStorage.clear();
+  sessionStorage.clear();
+  vi.resetAllMocks();
+  listarActividades.mockResolvedValue(catalogo);
 });
 
 afterEach(() => {
@@ -39,14 +85,10 @@ describe("App", () => {
     const usuario = userEvent.setup();
     renderApp("/actividades");
 
+    await screen.findByRole("heading", { name: "Taller de guitarra" });
+
     const obtenerTarjetaGuitarra = () =>
       within(screen.getByRole("heading", { name: "Taller de guitarra" }).closest("article"));
-
-    await usuario.click(
-      obtenerTarjetaGuitarra().getByRole("button", { name: "Inscribirme" })
-    );
-
-    expect(obtenerTarjetaGuitarra().getByText("Cupos: 11")).toBeInTheDocument();
 
     await usuario.click(
       obtenerTarjetaGuitarra().getByRole("button", { name: "Inscribirme" })
@@ -55,10 +97,17 @@ describe("App", () => {
     await waitFor(() => {
       expect(JSON.parse(localStorage.getItem("inscripciones"))).toHaveLength(1);
     });
-    expect(obtenerTarjetaGuitarra().getByText("Cupos: 11")).toBeInTheDocument();
+
+    await usuario.click(
+      obtenerTarjetaGuitarra().getByRole("button", { name: "Inscribirme" })
+    );
+
+    await waitFor(() => {
+      expect(JSON.parse(localStorage.getItem("inscripciones"))).toHaveLength(1);
+    });
   });
 
-  it("elimina una inscripción guardada y devuelve el cupo", async () => {
+  it("elimina una inscripción guardada", async () => {
     const usuario = userEvent.setup();
     localStorage.setItem(
       "inscripciones",
@@ -83,41 +132,74 @@ describe("App", () => {
     await waitFor(() => {
       expect(JSON.parse(localStorage.getItem("inscripciones"))).toEqual([]);
     });
-
-    await usuario.click(screen.getByRole("link", { name: "Actividades" }));
-    expect(
-      within(screen.getByRole("heading", { name: "Taller de guitarra" }).closest("article"))
-        .getByText("Cupos: 12")
-    ).toBeInTheDocument();
   });
 
-  it("permite crear y eliminar una actividad desde la administración", async () => {
-    const usuario = userEvent.setup();
+  it("redirige al login cuando la ruta administrativa no tiene sesión", () => {
     renderApp("/admin/actividades");
 
-    await usuario.type(screen.getByLabelText("Nombre"), "Taller de cerámica");
-    await usuario.selectOptions(screen.getByLabelText("Categoría"), "Artes visuales");
-    await usuario.type(screen.getByLabelText("Cupos"), "4");
-    await usuario.click(screen.getByRole("button", { name: "Guardar" }));
+    expect(screen.getByRole("heading", { name: "Iniciar sesión" })).toBeInTheDocument();
+    expect(listarActividades).not.toHaveBeenCalled();
+  });
 
-    const titulo = screen.getByRole("heading", { name: "Taller de cerámica" });
-    expect(titulo).toBeInTheDocument();
+  it("devuelve al inicio cuando la sesión no tiene rol ADMIN", () => {
+    sesion("USER");
+    renderApp("/admin/actividades");
+
+    expect(
+      screen.getByRole("link", { name: "Ver actividades" })
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole("heading", { name: "Administración de actividades" })
+    ).not.toBeInTheDocument();
+  });
+
+  it("permite a un ADMIN eliminar una actividad desde la administración", async () => {
+    const usuario = userEvent.setup();
+    const confirmar = vi.spyOn(window, "confirm").mockReturnValue(true);
+    eliminarActividad.mockResolvedValue(null);
+
+    sesion("ADMIN");
+    renderApp("/admin/actividades");
+
+    const titulo = await screen.findByRole("heading", { name: "Taller de guitarra" });
 
     await usuario.click(
       within(titulo.closest("article")).getByRole("button", { name: "Eliminar" })
     );
 
-    expect(screen.queryByRole("heading", { name: "Taller de cerámica" })).not.toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.queryByRole("heading", { name: "Taller de guitarra" })).not.toBeInTheDocument();
+    });
+
+    expect(eliminarActividad).toHaveBeenCalledWith(1);
+    expect(screen.getByRole("heading", { name: "Acuarela inicial" })).toBeInTheDocument();
+    confirmar.mockRestore();
+  });
+
+  it("muestra el rol y cierra la sesión del ADMIN", async () => {
+    const usuario = userEvent.setup();
+    sesion("ADMIN");
+    renderApp("/");
+
+    expect(await screen.findByText("admin (ADMIN)")).toBeInTheDocument();
+
+    await usuario.click(screen.getByRole("button", { name: "Cerrar sesión" }));
+
+    expect(sessionStorage.getItem("token")).toBeNull();
+    expect(sessionStorage.getItem("usuario")).toBeNull();
+    expect(screen.getByRole("link", { name: "Iniciar sesión" })).toBeInTheDocument();
   });
 
   it.each([
     ["/categorias", "Categorías", "Música"],
     ["/ofertas", "Ofertas", "Sección de ofertas de Conecta Cultura."],
     ["/ruta-inexistente", "Página no encontrada", "La dirección solicitada no corresponde a una vista disponible."]
-  ])("renderiza correctamente la ruta %s", (ruta, encabezado, contenido) => {
+  ])("renderiza correctamente la ruta %s", async (ruta, encabezado, contenido) => {
     renderApp(ruta);
 
-    expect(screen.getByRole("heading", { name: encabezado })).toBeInTheDocument();
-    expect(screen.getByText(contenido)).toBeInTheDocument();
+    expect(
+      await screen.findByRole("heading", { name: encabezado })
+    ).toBeInTheDocument();
+    expect(await screen.findByText(contenido)).toBeInTheDocument();
   });
 });

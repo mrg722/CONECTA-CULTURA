@@ -2,10 +2,17 @@ import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/re
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { MemoryRouter } from "react-router-dom";
 
-vi.mock("./pages/Actividades", () => ({
-  default: function ActividadesDePrueba({ actividades, onInscribir }) {
-    const actividadAgotada = actividades.find((actividad) => actividad.cupos === 0);
+const actividadAgotada = {
+  id: 9,
+  nombre: "Taller agotado",
+  categoria: "Música",
+  descripcion: "Sin cupos disponibles.",
+  precio: 0,
+  cupos: 0
+};
 
+vi.mock("./pages/Actividades", () => ({
+  default: function ActividadesDePrueba({ onInscribir }) {
     return (
       <button onClick={() => onInscribir(actividadAgotada)}>
         Probar inscripción sin cupos
@@ -15,6 +22,7 @@ vi.mock("./pages/Actividades", () => ({
 }));
 
 import App from "./App";
+import { AuthProvider } from "./context/AuthProvider";
 
 afterEach(() => {
   cleanup();
@@ -22,6 +30,7 @@ afterEach(() => {
 
 beforeEach(() => {
   localStorage.clear();
+  sessionStorage.clear();
 });
 
 describe("resguardo de inscripción en App", () => {
@@ -31,7 +40,9 @@ describe("resguardo de inscripción en App", () => {
         v7_startTransition: true,
         v7_relativeSplatPath: true
       }}>
-        <App />
+        <AuthProvider>
+          <App />
+        </AuthProvider>
       </MemoryRouter>
     );
 
